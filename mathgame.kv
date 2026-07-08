@@ -601,11 +601,17 @@
                 valign: 'top'
                 color: 0.85, 0.85, 0.9, 1
 
-        ColoredButton:
-            text: '返回'
-            size_hint_x: 0.5
-            pos_hint: {'center_x': 0.5}
-            on_release: app.root.current = 'difficulty'
+        BoxLayout:
+            size_hint_y: None
+            height: dp(52)
+            spacing: dp(12)
+            ColoredButton:
+                text: '清除统计'
+                background_color: 0.8, 0.2, 0.2, 1
+                on_release: root.clear_stats()
+            ColoredButton:
+                text: '返回'
+                on_release: app.root.current = 'difficulty'
 
 # ─────────────────────── 设置 ───────────────────────
 <SettingsScreen>:

@@ -122,6 +122,14 @@ def get_wrong_list(username, difficulty):
     return list(dl.values())
 
 
+def clear_stats(username):
+    """清除用户所有统计和错题"""
+    data = _load_user(username)
+    data['stats'] = {}
+    data['wrong'] = {}
+    _save_user(username, data)
+
+
 def get_wrong_question(username, difficulty):
     """随机获取一道错题，无错题返回 None"""
     import random

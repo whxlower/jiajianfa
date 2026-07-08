@@ -388,6 +388,10 @@ class StatsScreen(Screen):
         lines.append(f'当前错题数: {wrong_count}')
         self.stats_text = '\n'.join(lines)
 
+    def clear_stats(self):
+        user_manager.clear_stats(self.username)
+        self.on_enter()  # 刷新显示
+
 
 class SettingsScreen(Screen):
     username = StringProperty('')
