@@ -1,0 +1,759 @@
+#:import dp kivy.metrics.dp
+#:import sp kivy.metrics.sp
+
+# ── 全局字体设置 ──
+<Label>:
+    font_name: 'CJK'
+<Button>:
+    font_name: 'CJK'
+<TextInput>:
+    font_name: 'CJK'
+
+<FlatButton@Button>:
+    background_normal: ''
+    background_down: ''
+    background_color: 0, 0, 0, 0
+    color: 1, 1, 1, 1
+    font_size: sp(18)
+    bold: True
+
+<ColoredButton@Button>:
+    font_size: sp(20)
+    bold: True
+    background_normal: ''
+    background_color: 0.2, 0.6, 1, 1
+    color: 1, 1, 1, 1
+    size_hint_y: None
+    height: dp(52)
+    radius: [dp(12)]
+
+<SmallButton@Button>:
+    font_size: sp(16)
+    background_normal: ''
+    background_color: 0.35, 0.35, 0.45, 1
+    color: 1, 1, 1, 1
+    size_hint_y: None
+    height: dp(44)
+
+<NumberButton@Button>:
+    font_size: sp(28)
+    bold: True
+    background_normal: ''
+    background_color: 0.22, 0.22, 0.3, 1
+    color: 1, 1, 1, 1
+    size_hint_y: None
+    height: dp(60)
+
+<ActionBtn@Button>:
+    font_size: sp(20)
+    bold: True
+    background_normal: ''
+    size_hint_y: None
+    height: dp(60)
+
+# ─────────────────────── 主菜单 ───────────────────────
+<MenuScreen>:
+    canvas.before:
+        Color:
+            rgba: 0.12, 0.12, 0.18, 1
+        Rectangle:
+            pos: self.pos
+            size: self.size
+
+    BoxLayout:
+        orientation: 'vertical'
+        padding: dp(30)
+        spacing: dp(20)
+
+        Label:
+            text: '加减法练习'
+            font_size: sp(36)
+            bold: True
+            size_hint_y: 0.3
+
+        Label:
+            text: '选择用户开始练习'
+            font_size: sp(18)
+            color: 0.7, 0.7, 0.8, 1
+            size_hint_y: 0.1
+
+        ColoredButton:
+            text: '选择用户'
+            on_release: app.root.current = 'user_select'
+
+        ColoredButton:
+            text: '新建用户'
+            background_color: 0.2, 0.7, 0.4, 1
+            on_release: app.root.current = 'user_create'
+
+        ColoredButton:
+            text: '用户管理'
+            background_color: 0.6, 0.4, 0.2, 1
+            on_release: app.root.current = 'user_manage'
+
+        Widget:
+            size_hint_y: 0.15
+
+# ─────────────────────── 选择用户 ───────────────────────
+<UserSelectScreen>:
+    on_enter: self._rebuild_list()
+
+    canvas.before:
+        Color:
+            rgba: 0.12, 0.12, 0.18, 1
+        Rectangle:
+            pos: self.pos
+            size: self.size
+
+    BoxLayout:
+        orientation: 'vertical'
+        padding: dp(20)
+        spacing: dp(12)
+
+        Label:
+            text: '选择用户'
+            font_size: sp(28)
+            bold: True
+            size_hint_y: None
+            height: dp(50)
+
+        ScrollView:
+            do_scroll_x: False
+            BoxLayout:
+                id: user_list
+                orientation: 'vertical'
+                size_hint_y: None
+                height: self.minimum_height
+                spacing: dp(8)
+                padding: dp(5)
+
+                # 动态用户列表在 Python 中生成
+
+        Widget:
+            size_hint_y: None
+            height: dp(10)
+
+        ColoredButton:
+            text: '返回主菜单'
+            size_hint_x: 0.6
+            pos_hint: {'center_x': 0.5}
+            on_release: app.root.current = 'menu'
+
+# ─────────────────────── 新建用户 ───────────────────────
+<UserCreateScreen>:
+    canvas.before:
+        Color:
+            rgba: 0.12, 0.12, 0.18, 1
+        Rectangle:
+            pos: self.pos
+            size: self.size
+
+    BoxLayout:
+        orientation: 'vertical'
+        padding: dp(30)
+        spacing: dp(15)
+
+        Label:
+            text: '新建用户'
+            font_size: sp(28)
+            bold: True
+            size_hint_y: None
+            height: dp(50)
+
+        Widget:
+            size_hint_y: 0.15
+
+        TextInput:
+            id: name_input
+            hint_text: '请输入用户名'
+            font_size: sp(22)
+            multiline: False
+            size_hint_y: None
+            height: dp(52)
+            padding: [dp(15), dp(12)]
+            background_color: 0.18, 0.18, 0.25, 1
+            foreground_color: 1, 1, 1, 1
+            hint_text_color: 0.5, 0.5, 0.6, 1
+            cursor_color: 1, 1, 1, 1
+
+        Label:
+            id: msg_label
+            text: ''
+            font_size: sp(16)
+            color: 1, 0.5, 0.3, 1
+            size_hint_y: None
+            height: dp(30)
+
+        ColoredButton:
+            text: '创建'
+            background_color: 0.2, 0.7, 0.4, 1
+            on_release: root._do_create()
+
+        ColoredButton:
+            text: '返回主菜单'
+            on_release: app.root.current = 'menu'
+
+        Widget:
+            size_hint_y: 0.2
+
+# ─────────────────────── 难度选择 ───────────────────────
+<DifficultyScreen>:
+    canvas.before:
+        Color:
+            rgba: 0.12, 0.12, 0.18, 1
+        Rectangle:
+            pos: self.pos
+            size: self.size
+
+    BoxLayout:
+        orientation: 'vertical'
+        padding: dp(25)
+        spacing: dp(15)
+
+        Label:
+            text: f'{root.username}，选择难度'
+            font_size: sp(24)
+            bold: True
+            size_hint_y: None
+            height: dp(50)
+
+        Widget:
+            size_hint_y: 0.08
+
+        Button:
+            text: '10 以内加减法'
+            font_size: sp(22)
+            bold: True
+            background_normal: ''
+            background_color: 0.15, 0.6, 0.3, 1
+            color: 1, 1, 1, 1
+            size_hint_y: None
+            height: dp(60)
+            on_release: root._start('10')
+
+        Button:
+            text: '20 以内加减法'
+            font_size: sp(22)
+            bold: True
+            background_normal: ''
+            background_color: 0.85, 0.7, 0.15, 1
+            color: 0.1, 0.1, 0.1, 1
+            size_hint_y: None
+            height: dp(60)
+            on_release: root._start('20')
+
+        Button:
+            text: '50 以内加减法'
+            font_size: sp(22)
+            bold: True
+            background_normal: ''
+            background_color: 0.9, 0.5, 0.15, 1
+            color: 1, 1, 1, 1
+            size_hint_y: None
+            height: dp(60)
+            on_release: root._start('50')
+
+        Button:
+            text: '100 以内加减法'
+            font_size: sp(22)
+            bold: True
+            background_normal: ''
+            background_color: 0.85, 0.2, 0.2, 1
+            color: 1, 1, 1, 1
+            size_hint_y: None
+            height: dp(60)
+            on_release: root._start('100')
+
+        Widget:
+            size_hint_y: 0.08
+
+        SmallButton:
+            text: '错题集'
+            background_color: 0.7, 0.3, 0.6, 1
+            on_release: root._go_wrong()
+
+        SmallButton:
+            text: '练习统计'
+            background_color: 0.3, 0.5, 0.8, 1
+            on_release: root._go_stats()
+
+        SmallButton:
+            text: '计时设置'
+            background_color: 0.4, 0.4, 0.5, 1
+            on_release: root._go_settings()
+
+        SmallButton:
+            text: '返回主菜单'
+            background_color: 0.35, 0.35, 0.45, 1
+            on_release: app.root.current = 'menu'
+
+# ─────────────────────── 答题界面 ───────────────────────
+<GameScreen>:
+    canvas.before:
+        Color:
+            rgba: 0.1, 0.1, 0.15, 1
+        Rectangle:
+            pos: self.pos
+            size: self.size
+
+    BoxLayout:
+        orientation: 'vertical'
+        padding: dp(15)
+        spacing: dp(8)
+
+        # ── 顶部信息栏 ──
+        BoxLayout:
+            size_hint_y: None
+            height: dp(36)
+            Label:
+                text: root.difficulty_label
+                font_size: sp(16)
+                color: 0.6, 0.6, 0.7, 1
+                halign: 'left'
+            Label:
+                text: root.count_text
+                font_size: sp(15)
+                color: 0.6, 0.6, 0.7, 1
+                halign: 'right'
+
+        # ── 计时进度条 ──
+        BoxLayout:
+            size_hint_y: None
+            height: dp(8)
+            opacity: 1 if root.timer_enabled else 0
+            canvas.before:
+                Color:
+                    rgba: 0.25, 0.25, 0.3, 1
+                RoundedRectangle:
+                    pos: self.pos
+                    size: self.size
+                    radius: [dp(4)]
+            Widget:
+                size_hint_x: root.progress_value / 100
+                canvas.before:
+                    Color:
+                        rgba: (1, 0.3, 0.2, 1) if root.progress_value < 20 else ((1, 0.8, 0.1, 1) if root.progress_value < 50 else (0.2, 0.8, 0.4, 1))
+                    RoundedRectangle:
+                        pos: self.pos
+                        size: self.size
+                        radius: [dp(4)]
+            Widget:
+                size_hint_x: 1 - root.progress_value / 100
+
+        Label:
+            text: root.timer_text
+            font_size: sp(16)
+            markup: True
+            size_hint_y: None
+            height: dp(24)
+            opacity: 1 if root.timer_enabled else 0
+
+        Widget:
+            size_hint_y: 0.05
+
+        # ── 题目显示 ──
+        Label:
+            text: root.question_text
+            font_size: sp(52)
+            bold: True
+            size_hint_y: 0.2
+
+        # ── 答案输入框 ──
+        BoxLayout:
+            size_hint_y: None
+            height: dp(60)
+            padding: [dp(20), 0]
+
+            canvas.before:
+                Color:
+                    rgba: 0.18, 0.18, 0.25, 1
+                RoundedRectangle:
+                    pos: self.pos
+                    size: self.size
+                    radius: [dp(12)]
+            Label:
+                text: root.answer_text if root.answer_text else '  '
+                font_size: sp(40)
+                bold: True
+                color: (1, 1, 1, 1) if root.answer_text else (0.4, 0.4, 0.5, 1)
+
+        # ── 反馈信息 ──
+        Label:
+            text: root.feedback_text
+            font_size: sp(22)
+            bold: True
+            color: root.feedback_color
+            size_hint_y: None
+            height: dp(40)
+
+        Widget:
+            size_hint_y: 0.03
+
+        # ── 数字键盘 ──
+        GridLayout:
+            cols: 3
+            spacing: dp(8)
+            size_hint_y: None
+            height: self.minimum_height
+            row_force_default: True
+            row_default_height: dp(60)
+
+            NumberButton:
+                text: '7'
+                on_release: root.on_digit('7')
+            NumberButton:
+                text: '8'
+                on_release: root.on_digit('8')
+            NumberButton:
+                text: '9'
+                on_release: root.on_digit('9')
+
+            NumberButton:
+                text: '4'
+                on_release: root.on_digit('4')
+            NumberButton:
+                text: '5'
+                on_release: root.on_digit('5')
+            NumberButton:
+                text: '6'
+                on_release: root.on_digit('6')
+
+            NumberButton:
+                text: '1'
+                on_release: root.on_digit('1')
+            NumberButton:
+                text: '2'
+                on_release: root.on_digit('2')
+            NumberButton:
+                text: '3'
+                on_release: root.on_digit('3')
+
+            NumberButton:
+                text: '0'
+                on_release: root.on_digit('0')
+
+            ActionBtn:
+                text: '退格'
+                background_color: 0.7, 0.4, 0.1, 1
+                on_release: root.on_backspace()
+
+            ActionBtn:
+                text: '清零'
+                background_color: 0.7, 0.2, 0.2, 1
+                on_release: root.on_clear()
+
+        Widget:
+            size_hint_y: 0.02
+
+        # ── 提交/下一题 ──
+        BoxLayout:
+            size_hint_y: None
+            height: dp(56)
+            spacing: dp(12)
+
+            Button:
+                text: '提交答案'
+                font_size: sp(22)
+                bold: True
+                background_normal: ''
+                background_color: (0.2, 0.6, 1, 1) if not root.show_next else (0.3, 0.3, 0.35, 1)
+                color: 1, 1, 1, (1 if not root.show_next else 0.4)
+                on_release: root.on_submit()
+                disabled: root.show_next
+
+            Button:
+                text: '下一题'
+                font_size: sp(22)
+                bold: True
+                background_normal: ''
+                background_color: (0.2, 0.7, 0.4, 1) if root.show_next else (0.3, 0.3, 0.35, 1)
+                color: 1, 1, 1, (1 if root.show_next else 0.4)
+                on_release: root.on_next()
+                disabled: not root.show_next
+
+        # ── 底部 ──
+        BoxLayout:
+            size_hint_y: None
+            height: dp(44)
+            SmallButton:
+                text: '返回'
+                size_hint_x: 0.35
+                on_release: root.on_back()
+
+# ─────────────────────── 错题集 ───────────────────────
+<WrongScreen>:
+    canvas.before:
+        Color:
+            rgba: 0.12, 0.12, 0.18, 1
+        Rectangle:
+            pos: self.pos
+            size: self.size
+
+    BoxLayout:
+        orientation: 'vertical'
+        padding: dp(25)
+        spacing: dp(15)
+
+        Label:
+            text: f'错题集 - {root.username}'
+            font_size: sp(26)
+            bold: True
+            size_hint_y: None
+            height: dp(50)
+
+        Label:
+            text: '选择错题难度进行练习'
+            font_size: sp(16)
+            color: 0.6, 0.6, 0.7, 1
+            size_hint_y: None
+            height: dp(30)
+
+        Widget:
+            size_hint_y: 0.1
+
+        Button:
+            text: f'10 以内错题 ({root.count_10})'
+            font_size: sp(20)
+            bold: True
+            background_normal: ''
+            background_color: (0.15, 0.6, 0.3, 1) if root.count_10 > 0 else (0.25, 0.25, 0.3, 1)
+            color: (1, 1, 1, 1) if root.count_10 > 0 else (0.4, 0.4, 0.45, 1)
+            size_hint_y: None
+            height: dp(56)
+            disabled: root.count_10 == 0
+            on_release: root.start_wrong('10')
+
+        Button:
+            text: f'20 以内错题 ({root.count_20})'
+            font_size: sp(20)
+            bold: True
+            background_normal: ''
+            background_color: (0.85, 0.7, 0.15, 1) if root.count_20 > 0 else (0.25, 0.25, 0.3, 1)
+            color: (0.1, 0.1, 0.1, 1) if root.count_20 > 0 else (0.4, 0.4, 0.45, 1)
+            size_hint_y: None
+            height: dp(56)
+            disabled: root.count_20 == 0
+            on_release: root.start_wrong('20')
+
+        Button:
+            text: f'50 以内错题 ({root.count_50})'
+            font_size: sp(20)
+            bold: True
+            background_normal: ''
+            background_color: (0.9, 0.5, 0.15, 1) if root.count_50 > 0 else (0.25, 0.25, 0.3, 1)
+            color: (1, 1, 1, 1) if root.count_50 > 0 else (0.4, 0.4, 0.45, 1)
+            size_hint_y: None
+            height: dp(56)
+            disabled: root.count_50 == 0
+            on_release: root.start_wrong('50')
+
+        Button:
+            text: f'100 以内错题 ({root.count_100})'
+            font_size: sp(20)
+            bold: True
+            background_normal: ''
+            background_color: (0.85, 0.2, 0.2, 1) if root.count_100 > 0 else (0.25, 0.25, 0.3, 1)
+            color: (1, 1, 1, 1) if root.count_100 > 0 else (0.4, 0.4, 0.45, 1)
+            size_hint_y: None
+            height: dp(56)
+            disabled: root.count_100 == 0
+            on_release: root.start_wrong('100')
+
+        Widget:
+            size_hint_y: 0.15
+
+        ColoredButton:
+            text: '返回'
+            size_hint_x: 0.5
+            pos_hint: {'center_x': 0.5}
+            on_release: app.root.current = 'difficulty'
+
+# ─────────────────────── 统计 ───────────────────────
+<StatsScreen>:
+    canvas.before:
+        Color:
+            rgba: 0.12, 0.12, 0.18, 1
+        Rectangle:
+            pos: self.pos
+            size: self.size
+
+    BoxLayout:
+        orientation: 'vertical'
+        padding: dp(25)
+        spacing: dp(15)
+
+        Label:
+            text: '练习统计'
+            font_size: sp(28)
+            bold: True
+            size_hint_y: None
+            height: dp(50)
+
+        ScrollView:
+            do_scroll_x: False
+            Label:
+                text: root.stats_text
+                font_size: sp(18)
+                text_size: self.width, None
+                size_hint_y: None
+                height: self.texture_size[1]
+                halign: 'left'
+                valign: 'top'
+                color: 0.85, 0.85, 0.9, 1
+
+        ColoredButton:
+            text: '返回'
+            size_hint_x: 0.5
+            pos_hint: {'center_x': 0.5}
+            on_release: app.root.current = 'difficulty'
+
+# ─────────────────────── 设置 ───────────────────────
+<SettingsScreen>:
+    canvas.before:
+        Color:
+            rgba: 0.12, 0.12, 0.18, 1
+        Rectangle:
+            pos: self.pos
+            size: self.size
+
+    BoxLayout:
+        orientation: 'vertical'
+        padding: dp(25)
+        spacing: dp(15)
+
+        Label:
+            text: f'计时设置 - {root.username}'
+            font_size: sp(24)
+            bold: True
+            size_hint_y: None
+            height: dp(50)
+
+        Widget:
+            size_hint_y: 0.1
+
+        # 计时开关
+        BoxLayout:
+            size_hint_y: None
+            height: dp(50)
+            Label:
+                text: '启用倒计时'
+                font_size: sp(20)
+            Switch:
+                active: root.timer_enabled
+                on_active: root.timer_enabled = self.active
+                size_hint_x: 0.3
+
+        # 时间设置
+        BoxLayout:
+            size_hint_y: None
+            height: dp(50)
+            Label:
+                text: '倒计时秒数'
+                font_size: sp(20)
+
+            Button:
+                text: '-'
+                font_size: sp(28)
+                bold: True
+                size_hint_x: 0.15
+                background_normal: ''
+                background_color: 0.7, 0.2, 0.2, 1
+                on_release: root.timer_seconds = max(5, root.timer_seconds - 5)
+
+            Label:
+                text: str(int(root.timer_seconds)) + ' 秒'
+                font_size: sp(22)
+                bold: True
+                size_hint_x: 0.3
+
+            Button:
+                text: '+'
+                font_size: sp(28)
+                bold: True
+                size_hint_x: 0.15
+                background_normal: ''
+                background_color: 0.2, 0.7, 0.3, 1
+                on_release: root.timer_seconds = min(300, root.timer_seconds + 5)
+
+        Widget:
+            size_hint_y: 0.15
+
+        # 快速预设
+        BoxLayout:
+            size_hint_y: None
+            height: dp(48)
+            spacing: dp(6)
+            Button:
+                text: '30秒'
+                font_size: sp(16)
+                background_normal: ''
+                background_color: 0.3, 0.5, 0.7, 1
+                on_release: root.timer_seconds = 30
+            Button:
+                text: '60秒'
+                font_size: sp(16)
+                background_normal: ''
+                background_color: 0.3, 0.5, 0.7, 1
+                on_release: root.timer_seconds = 60
+            Button:
+                text: '120秒'
+                font_size: sp(16)
+                background_normal: ''
+                background_color: 0.3, 0.5, 0.7, 1
+                on_release: root.timer_seconds = 120
+            Button:
+                text: '180秒'
+                font_size: sp(16)
+                background_normal: ''
+                background_color: 0.3, 0.5, 0.7, 1
+                on_release: root.timer_seconds = 180
+
+        Widget:
+            size_hint_y: 0.2
+
+        ColoredButton:
+            text: '保存设置'
+            background_color: 0.2, 0.7, 0.4, 1
+            on_release: root.save_settings(); app.root.current = 'difficulty'
+
+        ColoredButton:
+            text: '返回'
+            on_release: app.root.current = 'difficulty'
+
+# ─────────────────────── 用户管理 ───────────────────────
+<UserManageScreen>:
+    on_enter: self._rebuild_list()
+
+    canvas.before:
+        Color:
+            rgba: 0.12, 0.12, 0.18, 1
+        Rectangle:
+            pos: self.pos
+            size: self.size
+
+    BoxLayout:
+        orientation: 'vertical'
+        padding: dp(20)
+        spacing: dp(12)
+
+        Label:
+            text: '用户管理'
+            font_size: sp(28)
+            bold: True
+            size_hint_y: None
+            height: dp(50)
+
+        ScrollView:
+            do_scroll_x: False
+            BoxLayout:
+                id: manage_list
+                orientation: 'vertical'
+                size_hint_y: None
+                height: self.minimum_height
+                spacing: dp(8)
+
+        ColoredButton:
+            text: '返回主菜单'
+            size_hint_x: 0.6
+            pos_hint: {'center_x': 0.5}
+            on_release: app.root.current = 'menu'
